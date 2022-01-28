@@ -16,6 +16,7 @@ object_script.*.Debug
 *_plugin_import.cpp
 /.qmake.cache
 /.qmake.stash
+*.txt.user
 *.pro.user
 *.pro.user.*
 *.qbs.user
@@ -29,6 +30,7 @@ ui_*.h
 *.jsc
 Makefile*
 *build-*
+/build*
 *.qm
 *.prl
 
@@ -37,6 +39,9 @@ target_wrapper.*
 
 # QtCreator
 *.autosave
+
+# VSCode
+/.vscode
 
 # QtCreator Qml
 *.qmlproject.user
