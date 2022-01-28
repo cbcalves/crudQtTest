@@ -79,7 +79,7 @@ void Router::insert( Method method, const QString& path, function_t func ) {
             regex.append( '$' );
 
         } else if ( path.contains( "/:" ) ) {
-            regex.replace( '/:', "\\S+$" );
+            regex.replace( "/:", "\\S+$" );
 
         } else {
             regex.append( "$|^" ).append( path ).append( "/$" );
