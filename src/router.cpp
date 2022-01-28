@@ -71,12 +71,15 @@ void Router::insert( Method method, const QString& path, function_t func ) {
     QString regex { path };
     regex.prepend( '^' );
 
-    if ( method != Method::USE ) {
+    if ( method == Method::USE ) {
+        regex.append( '/' );
+
+    } else {
         if ( path == "/" ) {
             regex.append( '$' );
 
-        } else if ( path.contains( ":" ) ) {
-            regex.replace( ':', "\\S+$" );
+        } else if ( path.contains( "/:" ) ) {
+            regex.replace( '/:', "\\S+$" );
 
         } else {
             regex.append( "$|^" ).append( path ).append( "/$" );
