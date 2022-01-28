@@ -29,8 +29,7 @@ ui_*.h
 *.qmlc
 *.jsc
 Makefile*
-*build-*
-/build*
+build*
 *.qm
 *.prl
 
@@ -41,7 +40,7 @@ target_wrapper.*
 *.autosave
 
 # VSCode
-/.vscode
+.vscode
 
 # QtCreator Qml
 *.qmlproject.user
