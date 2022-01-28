@@ -4,6 +4,7 @@ RequestHandler::RequestHandler( QObject* parent ) :
     HttpRequestHandler( parent ) {
 
     // Show forward route
+    _router.use( "/hom", &_testApi );
     _router.use( "/test", &_testApi );
     _router.use( "/home", &_homeApi );
 
