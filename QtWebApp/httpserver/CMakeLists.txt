@@ -1,0 +1,39 @@
+set(HEADER_FILES
+    httpglobal.h
+    httplistener.h
+    httpconnectionhandler.h
+    httpconnectionhandlerpool.h
+    httprequest.h
+    httpresponse.h
+    httpcookie.h
+    httprequesthandler.h
+    httpsession.h
+    httpsessionstore.h
+    staticfilecontroller.h
+)
+
+set(PROJECT_FILES
+    httpglobal.cpp
+    httplistener.cpp
+    httpconnectionhandler.cpp
+    httpconnectionhandlerpool.cpp
+    httprequest.cpp
+    httpresponse.cpp
+    httpcookie.cpp
+    httprequesthandler.cpp
+    httpsession.cpp
+    httpsessionstore.cpp
+    staticfilecontroller.cpp
+)
+
+add_library(httpserver
+    OBJECT
+    ${HEADER_FILES}
+    ${PROJECT_FILES}
+)
+target_compile_options(httpserver PRIVATE ${COMPILE_WARNS})
+target_link_libraries(httpserver 
+    PRIVATE 
+    Qt${QT_VERSION_MAJOR}::Core 
+    Qt${QT_VERSION_MAJOR}::Network
+)
