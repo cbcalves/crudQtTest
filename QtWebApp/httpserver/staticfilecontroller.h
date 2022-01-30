@@ -45,8 +45,8 @@ namespace stefanfrings {
 class DECLSPEC StaticFileController : public HttpRequestHandler  {
     Q_OBJECT
     Q_DISABLE_COPY( StaticFileController )
-public:
 
+public:
     /**
        Constructor.
        @param settings Configuration settings, usually stored in an INI file. Must not be 0.
@@ -57,21 +57,20 @@ public:
        caller should destroy it during shutdown.
        @param parent Parent object
      */
-    StaticFileController( const QSettings* settings, QObject* parent = nullptr );
+    explicit StaticFileController( const QSettings* settings, QObject* parent = nullptr );
 
     /** Generates the response */
-    void service( HttpRequest& request, HttpResponse& response );
+    void service( HttpRequest& request, HttpResponse& response ) override;
 
 private:
-
     /** Encoding of text files */
-    QString encoding;
+    QString m_encoding;
 
     /** Root directory of documents */
-    QString docroot;
+    QString m_docroot;
 
     /** Maximum age of files in the browser cache */
-    int maxAge;
+    int m_maxAge;
 
     struct CacheEntry {
         QByteArray document;
@@ -80,19 +79,19 @@ private:
     };
 
     /** Timeout for each cached file */
-    int cacheTimeout;
+    int m_cacheTimeout;
 
     /** Maximum size of files in cache, larger files are not cached */
-    int maxCachedFileSize;
+    int m_maxCachedFileSize;
 
     /** Cache storage */
-    QCache<QString, CacheEntry> cache;
+    QCache<QString, CacheEntry> m_cache;
 
     /** Used to synchronize cache access for threads */
-    QMutex mutex;
+    QMutex m_mutex;
 
     /** Set a content-type header in the response depending on the ending of the filename */
-    void setContentType( const QString file, HttpResponse& response ) const;
+    void setContentType( const QString& file, HttpResponse& response ) const;
 };
 
 } // end of namespace
