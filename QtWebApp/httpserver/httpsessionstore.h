@@ -35,8 +35,8 @@ namespace stefanfrings {
 class DECLSPEC HttpSessionStore : public QObject {
     Q_OBJECT
     Q_DISABLE_COPY( HttpSessionStore )
-public:
 
+public:
     /**
        Constructor.
        @param settings Configuration settings, usually stored in an INI file. Must not be 0.
@@ -47,7 +47,7 @@ public:
        caller should destroy it during shutdown.
        @param parent Parent object
      */
-    HttpSessionStore( const QSettings* settings, QObject* parent=nullptr );
+    explicit HttpSessionStore( const QSettings* settings, QObject* parent = nullptr );
 
     /** Destructor */
     virtual ~HttpSessionStore();
@@ -61,7 +61,7 @@ public:
        @param response Used to get and set the new session cookie
        @return Empty string, if there is no valid session.
      */
-    QByteArray getSessionId( HttpRequest& request, HttpResponse& response );
+    QByteArray getSessionId( const HttpRequest& request, HttpResponse& response );
 
     /**
        Get the session of a HTTP request, eventually create a new one.
@@ -73,7 +73,7 @@ public:
        @return If autoCreate is disabled, the function returns a null session if there is no session.
        @see HttpSession::isNull()
      */
-    HttpSession getSession( HttpRequest& request, HttpResponse& response, const bool allowCreate=true );
+    HttpSession getSession( const HttpRequest& request, HttpResponse& response, const bool allowCreate = true );
 
     /**
        Get a HTTP session by it's ID number.
@@ -82,44 +82,42 @@ public:
        @param id ID number of the session
        @see HttpSession::isNull()
      */
-    HttpSession getSession( const QByteArray id );
+    HttpSession getSession( const QByteArray& id );
 
     /** Delete a session */
-    void removeSession( const HttpSession session );
+    void removeSession( const HttpSession& session );
+
+signals:
+    /**
+       Emitted when the session is deleted.
+       @param sessionId The ID number of the session.
+     */
+    void sessionDeleted( const QByteArray& sessionId );
 
 protected:
     /** Storage for the sessions */
     QMap<QByteArray, HttpSession> sessions;
 
 private:
-
     /** Configuration settings */
-    const QSettings* settings;
+    const QSettings* m_settings;
 
     /** Timer to remove expired sessions */
-    QTimer cleanupTimer;
+    QTimer m_cleanupTimer;
 
     /** Name of the session cookie */
-    QByteArray cookieName;
+    QByteArray m_cookieName;
 
     /** Time when sessions expire (in ms)*/
-    int expirationTime;
+    int m_expirationTime;
 
     /** Used to synchronize threads */
-    QMutex mutex;
+    QMutex m_mutex;
 
 private slots:
-
     /** Called every minute to cleanup expired sessions. */
     void sessionTimerEvent();
 
-signals:
-
-    /**
-       Emitted when the session is deleted.
-       @param sessionId The ID number of the session.
-     */
-    void sessionDeleted( const QByteArray& sessionId );
 };
 
 } // end of namespace
