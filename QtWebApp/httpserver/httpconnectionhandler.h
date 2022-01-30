@@ -1,7 +1,7 @@
 /**
-  @file
-  @author Stefan Frings
-*/
+   @file
+   @author Stefan Frings
+ */
 
 #ifndef HTTPCONNECTIONHANDLER_H
 #define HTTPCONNECTIONHANDLER_H
@@ -20,10 +20,10 @@
 namespace stefanfrings {
 
 /** Alias type definition, for compatibility to different Qt versions */
-#if QT_VERSION >= QT_VERSION_CHECK(5, 0, 0)
-    typedef qintptr tSocketDescriptor;
+#if QT_VERSION >= QT_VERSION_CHECK( 5, 0, 0 )
+typedef qintptr tSocketDescriptor;
 #else
-    typedef int tSocketDescriptor;
+typedef int tSocketDescriptor;
 #endif
 
 /** Alias for QSslConfiguration if OpenSSL is not supported */
@@ -32,34 +32,34 @@ namespace stefanfrings {
 #endif
 
 /**
-  The connection handler accepts incoming connections and dispatches incoming requests to to a
-  request mapper. Since HTTP clients can send multiple requests before waiting for the response,
-  the incoming requests are queued and processed one after the other.
-  <p>
-  Example for the required configuration settings:
-  <code><pre>
-  readTimeout=60000
-  maxRequestSize=16000
-  maxMultiPartSize=1000000
-  </pre></code>
-  <p>
-  The readTimeout value defines the maximum time to wait for a complete HTTP request.
-  @see HttpRequest for description of config settings maxRequestSize and maxMultiPartSize.
-*/
+   The connection handler accepts incoming connections and dispatches incoming requests to to a
+   request mapper. Since HTTP clients can send multiple requests before waiting for the response,
+   the incoming requests are queued and processed one after the other.
+   <p>
+   Example for the required configuration settings:
+   <code><pre>
+   readTimeout=60000
+   maxRequestSize=16000
+   maxMultiPartSize=1000000
+   </pre></code>
+   <p>
+   The readTimeout value defines the maximum time to wait for a complete HTTP request.
+   @see HttpRequest for description of config settings maxRequestSize and maxMultiPartSize.
+ */
 class DECLSPEC HttpConnectionHandler : public QObject {
     Q_OBJECT
-    Q_DISABLE_COPY(HttpConnectionHandler)
+    Q_DISABLE_COPY( HttpConnectionHandler )
 
 public:
 
     /**
-      Constructor.
-      @param settings Configuration settings of the HTTP webserver
-      @param requestHandler Handler that will process each incoming HTTP request
-      @param sslConfiguration SSL (HTTPS) will be used if not NULL
-    */
-    HttpConnectionHandler(const QSettings* settings, HttpRequestHandler* requestHandler,
-                          const QSslConfiguration* sslConfiguration=nullptr);
+       Constructor.
+       @param settings Configuration settings of the HTTP webserver
+       @param requestHandler Handler that will process each incoming HTTP request
+       @param sslConfiguration SSL (HTTPS) will be used if not NULL
+     */
+    HttpConnectionHandler( const QSettings* settings, HttpRequestHandler* requestHandler,
+                           const QSslConfiguration* sslConfiguration=nullptr );
 
     /** Destructor */
     virtual ~HttpConnectionHandler();
@@ -102,10 +102,10 @@ private:
 public slots:
 
     /**
-      Received from from the listener, when the handler shall start processing a new connection.
-      @param socketDescriptor references the accepted connection.
-    */
-    void handleConnection(const tSocketDescriptor socketDescriptor);
+       Received from from the listener, when the handler shall start processing a new connection.
+       @param socketDescriptor references the accepted connection.
+     */
+    void handleConnection( const tSocketDescriptor socketDescriptor );
 
 private slots:
 

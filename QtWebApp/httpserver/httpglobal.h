@@ -1,7 +1,7 @@
 /**
-  @file
-  @author Stefan Frings
-*/
+   @file
+   @author Stefan Frings
+ */
 
 #ifndef HTTPGLOBAL_H
 #define HTTPGLOBAL_H
@@ -9,14 +9,14 @@
 #include <QtGlobal>
 
 // This is specific to Windows dll's
-#if defined(Q_OS_WIN)
-    #if defined(QTWEBAPPLIB_EXPORT)
+#if defined( Q_OS_WIN )
+    #if defined( QTWEBAPPLIB_EXPORT )
         #define DECLSPEC Q_DECL_EXPORT
-    #elif defined(QTWEBAPPLIB_IMPORT)
+    #elif defined( QTWEBAPPLIB_IMPORT )
         #define DECLSPEC Q_DECL_IMPORT
     #endif
 #endif
-#if !defined(DECLSPEC)
+#if !defined( DECLSPEC )
     #define DECLSPEC
 #endif
 
@@ -28,4 +28,3 @@ DECLSPEC const char* getQtWebAppLibVersion();
 #endif
 
 #endif // HTTPGLOBAL_H
-

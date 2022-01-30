@@ -1,7 +1,7 @@
 /**
-  @file
-  @author Stefan Frings
-*/
+   @file
+   @author Stefan Frings
+ */
 
 #ifndef HTTPSESSIONSTORE_H
 #define HTTPSESSIONSTORE_H
@@ -18,36 +18,36 @@
 namespace stefanfrings {
 
 /**
-  Stores HTTP sessions and deletes them when they have expired.
-  The following configuration settings are required in the config file:
-  <code><pre>
-  expirationTime=3600000
-  cookieName=sessionid
-  </pre></code>
-  The following additional configurations settings are optionally:
-  <code><pre>
-  cookiePath=/
-  cookieComment=Session ID
-  ;cookieDomain=stefanfrings.de
-  </pre></code>
-*/
+   Stores HTTP sessions and deletes them when they have expired.
+   The following configuration settings are required in the config file:
+   <code><pre>
+   expirationTime=3600000
+   cookieName=sessionid
+   </pre></code>
+   The following additional configurations settings are optionally:
+   <code><pre>
+   cookiePath=/
+   cookieComment=Session ID
+   ;cookieDomain=stefanfrings.de
+   </pre></code>
+ */
 
 class DECLSPEC HttpSessionStore : public QObject {
     Q_OBJECT
-    Q_DISABLE_COPY(HttpSessionStore)
+    Q_DISABLE_COPY( HttpSessionStore )
 public:
 
     /**
-      Constructor.
-      @param settings Configuration settings, usually stored in an INI file. Must not be 0.
-      Settings are read from the current group, so the caller must have called settings->beginGroup().
-      Because the group must not change during runtime, it is recommended to provide a
-      separate QSettings instance that is not used by other parts of the program.
-      The HttpSessionStore does not take over ownership of the QSettings instance, so the
-      caller should destroy it during shutdown.
-      @param parent Parent object
+       Constructor.
+       @param settings Configuration settings, usually stored in an INI file. Must not be 0.
+       Settings are read from the current group, so the caller must have called settings->beginGroup().
+       Because the group must not change during runtime, it is recommended to provide a
+       separate QSettings instance that is not used by other parts of the program.
+       The HttpSessionStore does not take over ownership of the QSettings instance, so the
+       caller should destroy it during shutdown.
+       @param parent Parent object
      */
-    HttpSessionStore(const QSettings* settings, QObject* parent=nullptr);
+    HttpSessionStore( const QSettings* settings, QObject* parent=nullptr );
 
     /** Destructor */
     virtual ~HttpSessionStore();
@@ -60,8 +60,8 @@ public:
        @param request Used to get the session cookie
        @param response Used to get and set the new session cookie
        @return Empty string, if there is no valid session.
-    */
-    QByteArray getSessionId(HttpRequest& request, HttpResponse& response);
+     */
+    QByteArray getSessionId( HttpRequest& request, HttpResponse& response );
 
     /**
        Get the session of a HTTP request, eventually create a new one.
@@ -72,8 +72,8 @@ public:
        @param allowCreate can be set to false, to disable the automatic creation of a new session.
        @return If autoCreate is disabled, the function returns a null session if there is no session.
        @see HttpSession::isNull()
-    */
-    HttpSession getSession(HttpRequest& request, HttpResponse& response, const bool allowCreate=true);
+     */
+    HttpSession getSession( HttpRequest& request, HttpResponse& response, const bool allowCreate=true );
 
     /**
        Get a HTTP session by it's ID number.
@@ -81,15 +81,15 @@ public:
        @return If there is no such session, the function returns a null session.
        @param id ID number of the session
        @see HttpSession::isNull()
-    */
-    HttpSession getSession(const QByteArray id);
+     */
+    HttpSession getSession( const QByteArray id );
 
     /** Delete a session */
-    void removeSession(const HttpSession session);
+    void removeSession( const HttpSession session );
 
 protected:
     /** Storage for the sessions */
-    QMap<QByteArray,HttpSession> sessions;
+    QMap<QByteArray, HttpSession> sessions;
 
 private:
 
@@ -116,10 +116,10 @@ private slots:
 signals:
 
     /**
-      Emitted when the session is deleted.
-      @param sessionId The ID number of the session.
-    */
-    void sessionDeleted(const QByteArray& sessionId);
+       Emitted when the session is deleted.
+       @param sessionId The ID number of the session.
+     */
+    void sessionDeleted( const QByteArray& sessionId );
 };
 
 } // end of namespace

@@ -1,7 +1,7 @@
 /**
-  @file
-  @author Stefan Frings
-*/
+   @file
+   @author Stefan Frings
+ */
 
 #ifndef HTTPREQUESTHANDLER_H
 #define HTTPREQUESTHANDLER_H
@@ -22,29 +22,29 @@ namespace stefanfrings {
    @warning Be aware that the main request handler instance must be created on the heap and
    that it is used by multiple threads simultaneously.
    @see StaticFileController which delivers static local files.
-*/
+ */
 
 class DECLSPEC HttpRequestHandler : public QObject {
     Q_OBJECT
-    Q_DISABLE_COPY(HttpRequestHandler)
+    Q_DISABLE_COPY( HttpRequestHandler )
 public:
 
     /**
      * Constructor.
      * @param parent Parent object.
      */
-    HttpRequestHandler(QObject* parent=nullptr);
+    HttpRequestHandler( QObject* parent=nullptr );
 
     /** Destructor */
     virtual ~HttpRequestHandler();
 
     /**
-      Generate a response for an incoming HTTP request.
-      @param request The received HTTP request
-      @param response Must be used to return the response
-      @warning This method must be thread safe
-    */
-    virtual void service(HttpRequest& request, HttpResponse& response);
+       Generate a response for an incoming HTTP request.
+       @param request The received HTTP request
+       @param response Must be used to return the response
+       @warning This method must be thread safe
+     */
+    virtual void service( HttpRequest& request, HttpResponse& response );
 
 };
 
