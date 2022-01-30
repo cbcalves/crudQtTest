@@ -27,13 +27,13 @@ namespace stefanfrings {
 class DECLSPEC HttpRequestHandler : public QObject {
     Q_OBJECT
     Q_DISABLE_COPY( HttpRequestHandler )
-public:
 
+public:
     /**
      * Constructor.
      * @param parent Parent object.
      */
-    HttpRequestHandler( QObject* parent=nullptr );
+    HttpRequestHandler( QObject* parent = nullptr );
 
     /** Destructor */
     virtual ~HttpRequestHandler();
