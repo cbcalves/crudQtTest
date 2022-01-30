@@ -55,7 +55,8 @@ void Router::service( stefanfrings::HttpRequest& request, stefanfrings::HttpResp
 
     function_t exec = findRoute( { Method::USE, Method::ALL, method }, newPath );
     if ( !exec ) {
-        response.setStatus( 404, "Not found" );
+        response.setStatus( 404, "not found" );
+        response.write( "404 not found", true );
         return;
     }
 
