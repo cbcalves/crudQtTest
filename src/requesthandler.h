@@ -18,6 +18,8 @@ public:
 
     void get( HttpRequest& request, HttpResponse& response );
     void address( HttpRequest& request, HttpResponse& response );
+    void name ( HttpRequest& request, HttpResponse& response );
+    void findName ( HttpRequest& request, HttpResponse& response );
 
 private:
     Router _router;

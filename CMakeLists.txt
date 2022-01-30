@@ -30,6 +30,8 @@ add_executable(${PROJECT_NAME}
     src/router.cpp
     src/jsondtohandler.h
     src/jsondtohandler.cpp
+    src/datadto.h
+    src/datadto.cpp
 )
 
 target_link_libraries(${PROJECT_NAME}
