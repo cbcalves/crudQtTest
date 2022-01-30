@@ -28,6 +28,8 @@ add_executable(${PROJECT_NAME}
     src/requesthandler.cpp
     src/router.h
     src/router.cpp
+    src/jsondtohandler.h
+    src/jsondtohandler.cpp
 )
 
 target_link_libraries(${PROJECT_NAME}
