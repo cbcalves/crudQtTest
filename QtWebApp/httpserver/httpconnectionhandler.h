@@ -51,7 +51,6 @@ class DECLSPEC HttpConnectionHandler : public QObject {
     Q_DISABLE_COPY( HttpConnectionHandler )
 
 public:
-
     /**
        Constructor.
        @param settings Configuration settings of the HTTP webserver
@@ -59,7 +58,7 @@ public:
        @param sslConfiguration SSL (HTTPS) will be used if not NULL
      */
     HttpConnectionHandler( const QSettings* settings, HttpRequestHandler* requestHandler,
-                           const QSslConfiguration* sslConfiguration=nullptr );
+                           const QSslConfiguration* sslConfiguration = nullptr );
 
     /** Destructor */
     virtual ~HttpConnectionHandler();
@@ -70,42 +69,40 @@ public:
     /** Mark this handler as busy */
     void setBusy();
 
-private:
-
-    /** Configuration settings */
-    const QSettings* settings;
-
-    /** TCP socket of the current connection  */
-    QTcpSocket* socket;
-
-    /** The thread that processes events of this connection */
-    QThread* thread;
-
-    /** Time for read timeout detection */
-    QTimer readTimer;
-
-    /** Storage for the current incoming HTTP request */
-    HttpRequest* currentRequest;
-
-    /** Dispatches received requests to services */
-    HttpRequestHandler* requestHandler;
-
-    /** This shows the busy-state from a very early time */
-    bool busy;
-
-    /** Configuration for SSL */
-    const QSslConfiguration* sslConfiguration;
-
-    /**  Create SSL or TCP socket */
-    void createSocket();
-
 public slots:
-
     /**
        Received from from the listener, when the handler shall start processing a new connection.
        @param socketDescriptor references the accepted connection.
      */
-    void handleConnection( const tSocketDescriptor socketDescriptor );
+    void handleConnection( const stefanfrings::tSocketDescriptor socketDescriptor );
+
+private:
+    /** Configuration settings */
+    const QSettings* m_settings;
+
+    /** TCP socket of the current connection  */
+    QTcpSocket* m_socket;
+
+    /** The thread that processes events of this connection */
+    QThread* m_thread;
+
+    /** Time for read timeout detection */
+    QTimer m_readTimer;
+
+    /** Storage for the current incoming HTTP request */
+    HttpRequest* m_currentRequest;
+
+    /** Dispatches received requests to services */
+    HttpRequestHandler* m_requestHandler;
+
+    /** This shows the busy-state from a very early time */
+    bool m_busy;
+
+    /** Configuration for SSL */
+    const QSslConfiguration* m_sslConfiguration;
+
+    /**  Create SSL or TCP socket */
+    void createSocket();
 
 private slots:
 
