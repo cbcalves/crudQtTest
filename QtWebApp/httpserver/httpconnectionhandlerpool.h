@@ -48,8 +48,8 @@ namespace stefanfrings {
 class DECLSPEC HttpConnectionHandlerPool : public QObject {
     Q_OBJECT
     Q_DISABLE_COPY( HttpConnectionHandlerPool )
-public:
 
+public:
     /**
        Constructor.
        @param settings Configuration settings for the HTTP server. Must not be 0.
@@ -65,30 +65,28 @@ public:
     HttpConnectionHandler* getConnectionHandler();
 
 private:
-
     /** Settings for this pool */
-    const QSettings* settings;
+    const QSettings* m_settings;
 
     /** Will be assigned to each Connectionhandler during their creation */
-    HttpRequestHandler* requestHandler;
+    HttpRequestHandler* m_requestHandler;
 
     /** Pool of connection handlers */
-    QList<HttpConnectionHandler*> pool;
+    QList<HttpConnectionHandler*> m_pool;
 
     /** Timer to clean-up unused connection handler */
-    QTimer cleanupTimer;
+    QTimer m_cleanupTimer;
 
     /** Used to synchronize threads */
-    QMutex mutex;
+    QMutex m_mutex;
 
     /** The SSL configuration (certificate, key and other settings) */
-    QSslConfiguration* sslConfiguration;
+    QSslConfiguration* m_sslConfiguration;
 
     /** Load SSL configuration */
     void loadSslConfig();
 
 private slots:
-
     /** Received from the clean-up timer.  */
     void cleanup();
 
