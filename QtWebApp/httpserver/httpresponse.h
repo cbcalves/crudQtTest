@@ -35,13 +35,13 @@ namespace stefanfrings {
 
 class DECLSPEC HttpResponse {
     Q_DISABLE_COPY( HttpResponse )
-public:
 
+public:
     /**
        Constructor.
        @param socket used to write the response
      */
-    HttpResponse( QTcpSocket* socket );
+    explicit HttpResponse( QTcpSocket* socket );
 
     /**
        Set a HTTP response header.
@@ -49,7 +49,7 @@ public:
        @param name name of the header
        @param value value of the header
      */
-    void setHeader( const QByteArray name, const QByteArray value );
+    void setHeader( const QByteArray& name, const QByteArray& value );
 
     /**
        Set a HTTP response header.
@@ -57,7 +57,7 @@ public:
        @param name name of the header
        @param value value of the header
      */
-    void setHeader( const QByteArray name, const int value );
+    void setHeader( const QByteArray& name, const int value );
 
     /** Get the map of HTTP response headers */
     QMap<QByteArray, QByteArray>& getHeaders();
@@ -69,7 +69,7 @@ public:
        Set status code and description. The default is 200,OK.
        You must call this method before the first write().
      */
-    void setStatus( const int statusCode, const QByteArray description=QByteArray() );
+    void setStatus( const int statusCode, const QByteArray& description=QByteArray() );
 
     /** Return the status code. */
     int getStatusCode() const;
@@ -87,7 +87,7 @@ public:
        @param data Data bytes of the body
        @param lastPart Indicates that this is the last chunk of data and flushes the output buffer.
      */
-    void write( const QByteArray data, const bool lastPart=false );
+    void write( const QByteArray& data, const bool lastPart = true );
 
     /**
        Indicates whether the body has been sent completely (write() has been called with lastPart=true).
@@ -112,7 +112,7 @@ public:
      * You normally don't need to call this method because flush is
      * automatically called after HttpRequestHandler::service() returns.
      */
-    void flush();
+    void flush() const;
 
     /**
      * May be used to check whether the connection to the web client has been lost.
@@ -121,33 +121,32 @@ public:
     bool isConnected() const;
 
 private:
-
     /** Request headers */
-    QMap<QByteArray, QByteArray> headers;
+    QMap<QByteArray, QByteArray> m_headers;
 
     /** Socket for writing output */
-    QTcpSocket* socket;
+    QTcpSocket* m_socket;
 
     /** HTTP status code*/
-    int statusCode;
+    int m_statusCode;
 
     /** HTTP status code description */
-    QByteArray statusText;
+    QByteArray m_statusText;
 
     /** Indicator whether headers have been sent */
-    bool sentHeaders;
+    bool m_sentHeaders;
 
     /** Indicator whether the body has been sent completely */
-    bool sentLastPart;
+    bool m_sentLastPart;
 
     /** Whether the response is sent in chunked mode */
-    bool chunkedMode;
+    bool m_chunkedMode;
 
     /** Cookies */
-    QMap<QByteArray, HttpCookie> cookies;
+    QMap<QByteArray, HttpCookie> m_cookies;
 
     /** Write raw data to the socket. This method blocks until all bytes have been passed to the TCP buffer */
-    bool writeToSocket( QByteArray data );
+    bool writeToSocket( const QByteArray& data ) const;
 
     /**
        Write the response HTTP status and headers to the socket.
