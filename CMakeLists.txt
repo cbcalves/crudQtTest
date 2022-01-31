@@ -20,16 +20,15 @@ endif()
 
 # link_directories might not be /build
 include_directories(QtWebApp)
+include_directories(QtWebAppAddons)
 link_directories(QtWebApp/build)
+link_directories(QtWebAppAddons/build)
+
 
 add_executable(${PROJECT_NAME}
     src/main.cpp
     src/requesthandler.h
     src/requesthandler.cpp
-    src/router.h
-    src/router.cpp
-    src/jsondtohandler.h
-    src/jsondtohandler.cpp
     src/datadto.h
     src/datadto.cpp
 )
@@ -39,5 +38,6 @@ target_link_libraries(${PROJECT_NAME}
     Qt${QT_VERSION_MAJOR}::Core
     Qt${QT_VERSION_MAJOR}::Network
     QtWebApp
+    QtWebAppAddons
 )
 target_compile_options(${PROJECT_NAME} PRIVATE ${COMPILE_WARNS})

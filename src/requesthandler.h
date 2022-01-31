@@ -3,7 +3,7 @@
 
 #include <httpserver/httprequesthandler.h>
 
-#include "router.h"
+#include "httpaddons/router.h"
 
 using stefanfrings::HttpRequest;
 using stefanfrings::HttpResponse;
