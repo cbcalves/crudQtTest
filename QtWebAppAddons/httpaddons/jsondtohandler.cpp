@@ -1,8 +1,6 @@
 #include "jsondtohandler.h"
 
-JsonDtoHandler::JsonDtoHandler() {}
-
-const QMetaObject* JsonDtoHandler::getQObject() const {
+const QMetaObject* JsonDtoHandler::getQObject() {
 #if ( QT_VERSION >= QT_VERSION_CHECK( 6, 0, 0 ) )
     const QMetaType metaType( QMetaType::fromName( "QObject" ) );
 #else
@@ -12,7 +10,7 @@ const QMetaObject* JsonDtoHandler::getQObject() const {
     return metaType.metaObject();
 }
 
-void JsonDtoHandler::convertToDTO( const QJsonObject& json, void* object, const QMetaObject& metaObject ) const {
+void JsonDtoHandler::convertToDTO( const QJsonObject& json, void* object, const QMetaObject& metaObject ) {
     for ( int i = 0; i < metaObject.propertyCount(); ++i ) {
         QMetaProperty metaProperty = metaObject.property( i );
 
@@ -32,7 +30,7 @@ void JsonDtoHandler::convertToDTO( const QJsonObject& json, void* object, const 
     }
 }
 
-void JsonDtoHandler::convertToJson( void* object, QJsonObject& json, const QMetaObject& metaObject ) const {
+void JsonDtoHandler::convertToJson( void* object, QJsonObject& json, const QMetaObject& metaObject ) {
     for ( int i = 0; i < metaObject.propertyCount(); ++i ) {
         QMetaProperty metaProperty = metaObject.property( i );
 

@@ -12,39 +12,37 @@
 
 class JsonDtoHandler {
 public:
-    JsonDtoHandler();
-
     template<typename DTO>
-    DTO* toDTO( const QJsonObject& json ) {
+    static DTO* toDTO( const QJsonObject& json ) {
         DTO* dto = new DTO;
         toDTO( json, dto );
         return dto;
     }
 
     template<typename DTO>
-    void toDTO( const QJsonObject& json, DTO* dto ) {
+    static void toDTO( const QJsonObject& json, DTO* dto ) {
         const QMetaObject metaObject = DTO::staticMetaObject;
         convertToDTO( json, dto, metaObject );
     }
 
     template<typename DTO>
-    QJsonObject toJson( DTO* dto ) {
+    static QJsonObject toJson( DTO* dto ) {
         QJsonObject json;
         toJson( dto, json );
         return json;
     }
 
     template<typename DTO>
-    void toJson( DTO* dto, QJsonObject& json ) const {
+    static void toJson( DTO* dto, QJsonObject& json ) {
         const QMetaObject metaObject = DTO::staticMetaObject;
         convertToJson( dto, json, metaObject );
     }
 
 private:
-    const QMetaObject* getQObject() const;
+    static const QMetaObject* getQObject();
 
-    void convertToDTO( const QJsonObject& json, void* object, const QMetaObject& metaObject ) const;
-    void convertToJson( void* object, QJsonObject& json, const QMetaObject& metaObject ) const;
+    static void convertToDTO( const QJsonObject& json, void* object, const QMetaObject& metaObject );
+    static void convertToJson( void* object, QJsonObject& json, const QMetaObject& metaObject );
 };
 
 #endif // JASONDTOHANDLER_H
