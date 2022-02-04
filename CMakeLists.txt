@@ -31,6 +31,9 @@ add_executable(${PROJECT_NAME}
     src/requesthandler.cpp
     src/datadto.h
     src/datadto.cpp
+    src/envset.h
+    src/envset.cpp
+    src/quotedto.h
 )
 
 target_link_libraries(${PROJECT_NAME}

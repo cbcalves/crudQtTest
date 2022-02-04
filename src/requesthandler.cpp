@@ -8,7 +8,11 @@
 #include <QJsonDocument>
 
 #include "httpaddons/jsondtohandler.h"
+#include "mongoaddons/mongo.h"
+#include "mongoaddons/mongoclient.h"
+
 #include "datadto.h"
+#include "quotedto.h"
 
 RequestHandler::RequestHandler( QObject* parent ) :
     HttpRequestHandler( parent ) {
@@ -27,6 +31,8 @@ RequestHandler::RequestHandler( QObject* parent ) :
     _router.getRequest( "/", []( HttpRequest&, HttpResponse& response ) {
         response.write( "main page test", true );
     } );
+
+    _router.getRequest( "/quote/:", this, &RequestHandler::quote );
 
     //Show /test/get with any request
     _testApi.allRequest( "/get", this, &RequestHandler::get );
@@ -63,7 +69,7 @@ void RequestHandler::name( HttpRequest& request, HttpResponse& response ) {
     QJsonDocument jsonDocument = QJsonDocument::fromJson( json );
 
     DataDTO data;
-    JsonDtoHandler().toDTO( jsonDocument.object(), &data );
+    JsonDtoHandler::toDTO( jsonDocument.object(), &data );
 
     qDebug() << "ID" << data.idObject() << "NAME" << data.name();
 
@@ -72,13 +78,39 @@ void RequestHandler::name( HttpRequest& request, HttpResponse& response ) {
     response.write( text.toUtf8(), true );
 }
 
-void RequestHandler::findName( stefanfrings::HttpRequest& request, stefanfrings::HttpResponse& response ) {
+void RequestHandler::findName( HttpRequest& request, HttpResponse& response ) {
     DataDTO data;
     data.setIdObject( Router::pathParam( request.getPath() ).toInt() );
     data.setName( "Test Name" );
 
     response.setHeader( "Content-Type", "text/json; charset=utf-8" );
 
-    auto jsonObject = JsonDtoHandler().toJson( &data );
+    auto jsonObject = JsonDtoHandler::toJson( &data );
     response.write( QJsonDocument( jsonObject ).toJson(), true );
+}
+
+void RequestHandler::quote( HttpRequest& request, HttpResponse& response ) {
+    int indice =  Router::pathParam( request.getPath() ).toInt();
+    if ( indice < 0 ) {
+        response.setStatus( 404, "Not found" );
+        return;
+    }
+
+    std::unique_ptr<MongoClient> client( Mongo::instance().getClient() );
+
+    QJsonObject opsObject;
+    opsObject["skip"] = indice;
+    opsObject["limit"] = 1;
+    QJsonDocument opts( opsObject );
+
+    if ( !client->find( QJsonDocument::fromJson( "{}" ), opts ) ) {
+        response.setStatus( 404, "Not found" );
+        return;
+    }
+
+    QuoteDTO quote;
+    JsonDtoHandler::toDTO( client->next().object(), &quote );
+
+    return response.write( QJsonDocument( JsonDtoHandler::toJson( &quote ) ).toJson() );
+
 }
