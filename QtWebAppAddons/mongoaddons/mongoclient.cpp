@@ -6,6 +6,8 @@
 
 #include <mongoc/mongoc.h>
 
+#define BSON_FREE( var ) if ( var ) bson_free( var )
+
 struct MongoClient::Data {
     bson_error_t error;
     mongoc_client_pool_t* pool = nullptr;
@@ -42,7 +44,7 @@ MongoClient::~MongoClient() {
     }
 
     if ( d->client ) {
-        mongoc_client_pool_push ( d->pool, d->client );
+        mongoc_client_pool_push( d->pool, d->client );
     }
 
     delete d;
@@ -61,17 +63,15 @@ bool MongoClient::find( const QJsonDocument& filter, const QJsonDocument& opts )
         return false;
     }
 
-    QByteArray jsonOpts = {};
     QByteArray jsonFilter = filter.toJson( QJsonDocument::Compact );
-    if ( !opts.isEmpty() ) {
-        jsonOpts = opts.toJson( QJsonDocument::Compact );
-    }
+    QByteArray jsonOpts = opts.toJson( QJsonDocument::Compact );
 
     bson_t* bsonFilter( bson_new_from_json( reinterpret_cast<uint8_t*>( jsonFilter.data() ), jsonFilter.size(), &d->error ) );
-    bson_t* bsonOpts( bson_new_from_json( reinterpret_cast<uint8_t*>( jsonOpts.data() ), -1, &d->error ) );
     if ( !bsonFilter ) {
         return false;
     }
+
+    bson_t* bsonOpts( bson_new_from_json( reinterpret_cast<uint8_t*>( jsonOpts.data() ), -1, &d->error ) );
 
     if ( d->cursor ) {
         mongoc_cursor_destroy( d->cursor );
@@ -80,7 +80,7 @@ bool MongoClient::find( const QJsonDocument& filter, const QJsonDocument& opts )
 
     d->cursor = mongoc_collection_find_with_opts( d->collection, bsonFilter, bsonOpts, nullptr );
     bson_free( bsonFilter );
-    bson_free( bsonOpts );
+    BSON_FREE( bsonOpts );
 
     return static_cast<bool>( d->cursor );
 }
@@ -99,7 +99,7 @@ QJsonDocument MongoClient::next() {
 
     char* json = ( bson_as_json( document, nullptr ) );
     QByteArray jsonDocument( json );
-    bson_free( json );
+    BSON_FREE( json );
 
     return QJsonDocument::fromJson( jsonDocument );
 }
@@ -110,12 +110,12 @@ bool MongoClient::insertOne( const QJsonDocument& document ) {
     }
 
     QByteArray jsonDocument = document.toJson( QJsonDocument::Compact );
-    std::unique_ptr<_bson_t> bsonDocument( bson_new_from_json( reinterpret_cast<uint8_t*>( jsonDocument.data() ), jsonDocument.size(), &d->error ) );
-    if ( !bsonDocument ) {
-        return false;
-    }
+    bson_t* bsonDocument = bson_new_from_json( reinterpret_cast<uint8_t*>( jsonDocument.data() ), jsonDocument.size(), &d->error );
 
-    return mongoc_collection_insert_one( d->collection, bsonDocument.get(), nullptr, nullptr, &d->error );
+    bool resp = bsonDocument && mongoc_collection_insert_one( d->collection, bsonDocument, nullptr, nullptr, &d->error );
+    BSON_FREE( bsonDocument );
+
+    return resp;
 }
 
 bool MongoClient::updateOne( const QJsonDocument& filter, const QJsonDocument& document, const QJsonDocument& opts ) {
@@ -125,19 +125,18 @@ bool MongoClient::updateOne( const QJsonDocument& filter, const QJsonDocument& d
 
     QByteArray jsonFilter = filter.toJson( QJsonDocument::Compact );
     QByteArray jsonDocument = document.toJson( QJsonDocument::Compact );
-    QByteArray jsonOpts = {};
-    if ( !opts.isEmpty() ) {
-        jsonOpts = opts.toJson( QJsonDocument::Compact );
-    }
+    QByteArray jsonOpts = opts.toJson( QJsonDocument::Compact );
 
-    std::unique_ptr<_bson_t> bsonFilter( bson_new_from_json( reinterpret_cast<uint8_t*>( jsonFilter.data() ), jsonFilter.size(), &d->error ) );
-    std::unique_ptr<_bson_t> bsonDocument( bson_new_from_json( reinterpret_cast<uint8_t*>( jsonDocument.data() ), jsonDocument.size(), &d->error ) );
-    std::unique_ptr<_bson_t> bsonOpts( bson_new_from_json( reinterpret_cast<uint8_t*>( jsonOpts.data() ), jsonOpts.size(), &d->error ) );
-    if ( !bsonDocument ) {
-        return false;
-    }
+    bson_t* bsonFilter = bson_new_from_json( reinterpret_cast<uint8_t*>( jsonFilter.data() ), jsonFilter.size(), &d->error );
+    bson_t* bsonDocument = bson_new_from_json( reinterpret_cast<uint8_t*>( jsonDocument.data() ), jsonDocument.size(), &d->error );
+    bson_t* bsonOpts = bson_new_from_json( reinterpret_cast<uint8_t*>( jsonOpts.data() ), jsonOpts.size(), &d->error );
 
-    return mongoc_collection_update_one( d->collection, bsonFilter.get(), bsonDocument.get(), bsonOpts.get(), nullptr, &d->error );
+    bool resp = bsonFilter && bsonDocument && mongoc_collection_update_one( d->collection, bsonFilter, bsonDocument, bsonOpts, nullptr, &d->error );
+    BSON_FREE( bsonFilter );
+    BSON_FREE( bsonDocument );
+    BSON_FREE( bsonOpts );
+
+    return resp;
 }
 
 bool MongoClient::removeOne( const QJsonDocument& filter, const QJsonDocument& opts ) {
@@ -145,19 +144,17 @@ bool MongoClient::removeOne( const QJsonDocument& filter, const QJsonDocument& o
         return false;
     }
 
-    QByteArray jsonOpts = {};
     QByteArray jsonFilter = filter.toJson( QJsonDocument::Compact );
-    if ( !opts.isEmpty() ) {
-        jsonOpts = opts.toJson( QJsonDocument::Compact );
-    }
+    QByteArray jsonOpts = opts.toJson( QJsonDocument::Compact );
 
-    std::unique_ptr<_bson_t> bsonFilter( bson_new_from_json( reinterpret_cast<uint8_t*>( jsonFilter.data() ), jsonFilter.size(), &d->error ) );
-    std::unique_ptr<_bson_t> bsonOpts( bson_new_from_json( reinterpret_cast<uint8_t*>( jsonOpts.data() ), jsonOpts.size(), &d->error ) );
-    if ( !bsonFilter ) {
-        return false;
-    }
+    bson_t* bsonFilter = bson_new_from_json( reinterpret_cast<uint8_t*>( jsonFilter.data() ), jsonFilter.size(), &d->error );
+    bson_t* bsonOpts = bson_new_from_json( reinterpret_cast<uint8_t*>( jsonOpts.data() ), jsonOpts.size(), &d->error );
 
-    return mongoc_collection_delete_one( d->collection, bsonFilter.get(), bsonOpts.get(), nullptr, &d->error );
+    bool resp = bsonFilter && mongoc_collection_delete_one( d->collection, bsonFilter, bsonOpts, nullptr, &d->error );
+    BSON_FREE( bsonFilter );
+    BSON_FREE( bsonOpts );
+
+    return resp;
 
 }
 
@@ -166,17 +163,15 @@ qint64 MongoClient::count( const QJsonDocument& filter, const QJsonDocument& opt
         return false;
     }
 
-    QByteArray jsonOpts = {};
     QByteArray jsonFilter = filter.toJson( QJsonDocument::Compact );
-    if ( !opts.isEmpty() ) {
-        jsonOpts = opts.toJson( QJsonDocument::Compact );
-    }
+    QByteArray jsonOpts = opts.toJson( QJsonDocument::Compact );
 
-    std::unique_ptr<_bson_t> bsonFilter( bson_new_from_json( reinterpret_cast<uint8_t*>( jsonFilter.data() ), jsonFilter.size(), &d->error ) );
-    std::unique_ptr<_bson_t> bsonOpts( bson_new_from_json( reinterpret_cast<uint8_t*>( jsonOpts.data() ), jsonOpts.size(), &d->error ) );
-    if ( !bsonFilter ) {
-        return false;
-    }
+    bson_t* bsonFilter = bson_new_from_json( reinterpret_cast<uint8_t*>( jsonFilter.data() ), jsonFilter.size(), &d->error );
+    bson_t* bsonOpts = bson_new_from_json( reinterpret_cast<uint8_t*>( jsonOpts.data() ), jsonOpts.size(), &d->error );
 
-    return mongoc_collection_count_documents( d->collection, bsonFilter.get(), bsonOpts.get(), nullptr, nullptr, &d->error );
+    bool resp = bsonFilter && mongoc_collection_count_documents( d->collection, bsonFilter, bsonOpts, nullptr, nullptr, &d->error );
+    BSON_FREE( bsonFilter );
+    BSON_FREE( bsonOpts );
+
+    return resp;
 }

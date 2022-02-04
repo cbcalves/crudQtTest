@@ -18,13 +18,13 @@ public:
 
     void setCollection( const QString& database, const QString& collection );
 
-    bool find( const QJsonDocument& filter, const QJsonDocument& opts = {} );
+    bool find( const QJsonDocument& filter = QJsonDocument::fromJson( "{}" ), const QJsonDocument& opts = {} );
     QJsonDocument next();
 
     bool insertOne( const QJsonDocument& document );
     bool updateOne( const QJsonDocument& filter, const QJsonDocument& document, const QJsonDocument& opts = {} );
     bool removeOne( const QJsonDocument& filter, const QJsonDocument& opts = {} );
-    qint64 count( const QJsonDocument& filter, const QJsonDocument& opts = {} );
+    qint64 count( const QJsonDocument& filter = QJsonDocument::fromJson( "{}" ), const QJsonDocument& opts = {} );
 
 private:
     Data* d;

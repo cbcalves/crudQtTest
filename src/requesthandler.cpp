@@ -5,6 +5,8 @@
 
 #include "requesthandler.h"
 
+#include <memory>
+
 #include <QJsonDocument>
 
 #include "httpaddons/jsondtohandler.h"
